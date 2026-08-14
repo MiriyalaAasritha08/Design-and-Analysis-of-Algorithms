@@ -1,0 +1,39 @@
+#include <stdio.h> 
+
+ int main() 
+
+{ 
+
+    int a, r, n, i, sum = 0; 
+
+  printf("Enter first term: "); 
+
+   scanf("%d", &a); 
+
+  
+
+  printf("Enter common ratio: "); 
+
+  scanf("%d", &r); 
+
+  
+
+  printf("Enter number of terms: "); 
+
+  scanf("%d", &n); 
+
+  for(i = 1; i <= n; i++) 
+
+    { 
+
+        sum = sum + a; 
+
+        a = a * r; 
+
+    } 
+
+printf("Sum = %d", sum)   
+
+ return 0; 
+
+} 
