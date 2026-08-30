@@ -1,0 +1,31 @@
+#include <stdio.h> 
+#define SIZE 100 
+
+int main() 
+{ 
+    int a[SIZE], hash[SIZE] = {0}; 
+    int n, i; 
+
+    printf("Enter the number of elements: "); 
+    scanf("%d", &n); 
+
+    printf("Enter the elements:\n"); 
+    for (i = 0; i < n; i++) 
+    {   
+        scanf("%d", &a[i]); 
+    } 
+    for (i = 0; i < n; i++) 
+    { 
+        if (a[i] >= 0 && a[i] < SIZE) 
+            hash[a[i]]++;   
+    } 
+    printf("\nFrequency of each distinct element:\n"); 
+    for (i = 0; i < SIZE; i++) 
+    { 
+        if (hash[i] > 0) 
+        { 
+           printf("%d : %d\n", i, hash[i]); 
+        } 
+    } 
+return 0; 
+} 
