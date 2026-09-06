@@ -1,0 +1,115 @@
+#include <stdio.h>
+
+struct Subarray
+{
+    int low;
+    int high;
+    int sum;
+};
+
+struct Subarray maxCrossingSum(int a[], int low, int mid, int high)
+{
+    int leftSum = -999999;
+    int rightSum = -999999;
+    int sum = 0;
+    int maxLeft, maxRight;
+    int i;
+
+for (i = mid; i >= low; i--)
+    {
+        sum = sum + a[i];
+
+        if (sum > leftSum)
+        {
+            leftSum = sum;
+            maxLeft = i;
+        }
+    }
+
+    sum = 0;
+
+  for (i = mid + 1; i <= high; i++)
+    {
+        sum = sum + a[i];
+
+        if (sum > rightSum)
+        {
+            rightSum = sum;
+            maxRight = i;
+        }
+    }
+
+    struct Subarray result;
+
+    result.low = maxLeft;
+    result.high = maxRight;
+    result.sum = leftSum + rightSum;
+
+    return result;
+}
+
+struct Subarray maxSubarray(int a[], int low, int high)
+{
+    struct Subarray leftResult, rightResult, crossResult;
+
+    if (low == high)
+    {
+        struct Subarray result;
+
+        result.low = low;
+        result.high = high;
+        result.sum = a[low];
+
+        return result;
+    }
+
+    int mid = (low + high) / 2;
+
+    leftResult = maxSubarray(a, low, mid);
+    rightResult = maxSubarray(a, mid + 1, high);
+    crossResult = maxCrossingSum(a, low, mid, high);
+
+    if (leftResult.sum >= rightResult.sum &&
+        leftResult.sum >= crossResult.sum)
+    {
+        return leftResult;
+    }
+    else if (rightResult.sum >= leftResult.sum &&
+             rightResult.sum >= crossResult.sum)
+    {
+        return rightResult;
+    }
+    else
+    {
+        return crossResult;
+    }
+}
+
+int main()
+{
+    int a[100], n, i;
+    struct Subarray result;
+
+    printf("Enter the number of elements: ");
+    scanf("%d", &n);
+
+    printf("Enter the elements:\n");
+
+    for (i = 0; i < n; i++)
+    {
+        scanf("%d", &a[i]);
+    }
+
+    result = maxSubarray(a, 0, n - 1);
+
+    printf("\nMaximum Subarray: ");
+
+    for (i = result.low; i <= result.high; i++)
+    {
+        printf("%d ", a[i]);
+    }
+
+    printf("\nMaximum Sum = %d\n", result.sum);
+
+    return 0;
+}
