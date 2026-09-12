@@ -1,23 +1,22 @@
 #include <stdio.h>
+#include <limits.h>
 
-struct Subarray
+typedef struct
 {
-    int low;
-    int high;
+    int left;
+    int right;
     int sum;
-};
+} Subarray;
 
-struct Subarray maxCrossingSum(int a[], int low, int mid, int high)
+Subarray maxCrossingSubarray(int a[], int low, int mid, int high)
 {
-    int leftSum = -999999;
-    int rightSum = -999999;
+    int leftSum = INT_MIN;
     int sum = 0;
-    int maxLeft, maxRight;
-    int i;
+    int maxLeft = mid;
 
-for (i = mid; i >= low; i--)
+    for (int i = mid; i >= low; i--)
     {
-        sum = sum + a[i];
+        sum += a[i];
 
         if (sum > leftSum)
         {
@@ -26,38 +25,36 @@ for (i = mid; i >= low; i--)
         }
     }
 
+    int rightSum = INT_MIN;
     sum = 0;
+    int maxRight = mid + 1;
 
-  for (i = mid + 1; i <= high; i++)
+    for (int j = mid + 1; j <= high; j++)
     {
-        sum = sum + a[i];
+        sum += a[j];
 
         if (sum > rightSum)
         {
             rightSum = sum;
-            maxRight = i;
+            maxRight = j;
         }
     }
 
-    struct Subarray result;
-
-    result.low = maxLeft;
-    result.high = maxRight;
+    Subarray result;
+    result.left = maxLeft;
+    result.right = maxRight;
     result.sum = leftSum + rightSum;
 
     return result;
 }
 
-struct Subarray maxSubarray(int a[], int low, int high)
+Subarray maxSubarray(int a[], int low, int high)
 {
-    struct Subarray leftResult, rightResult, crossResult;
-
     if (low == high)
     {
-        struct Subarray result;
-
-        result.low = low;
-        result.high = high;
+        Subarray result;
+        result.left = low;
+        result.right = high;
         result.sum = a[low];
 
         return result;
@@ -65,9 +62,11 @@ struct Subarray maxSubarray(int a[], int low, int high)
 
     int mid = (low + high) / 2;
 
-    leftResult = maxSubarray(a, low, mid);
-    rightResult = maxSubarray(a, mid + 1, high);
-    crossResult = maxCrossingSum(a, low, mid, high);
+    Subarray leftResult = maxSubarray(a, low, mid);
+
+    Subarray rightResult = maxSubarray(a, mid + 1, high);
+
+    Subarray crossResult = maxCrossingSubarray(a, low, mid, high);
 
     if (leftResult.sum >= rightResult.sum &&
         leftResult.sum >= crossResult.sum)
@@ -87,29 +86,28 @@ struct Subarray maxSubarray(int a[], int low, int high)
 
 int main()
 {
-    int a[100], n, i;
-    struct Subarray result;
+    int a[100], n;
 
-    printf("Enter the number of elements: ");
+    printf("Enter number of elements: ");
     scanf("%d", &n);
 
     printf("Enter the elements:\n");
 
-    for (i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
     {
         scanf("%d", &a[i]);
     }
 
-    result = maxSubarray(a, 0, n - 1);
+    Subarray result = maxSubarray(a, 0, n - 1);
 
-    printf("\nMaximum Subarray: ");
+    printf("Maximum subarray: ");
 
-    for (i = result.low; i <= result.high; i++)
+    for (int i = result.left; i <= result.right; i++)
     {
         printf("%d ", a[i]);
     }
 
-    printf("\nMaximum Sum = %d\n", result.sum);
+    printf("\nMaximum subarray sum = %d\n", result.sum);
 
     return 0;
 }
