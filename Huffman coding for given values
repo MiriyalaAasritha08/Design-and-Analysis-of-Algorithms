@@ -1,0 +1,67 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    char ch;
+    int freq;
+    struct Node *left, *right;
+};
+
+struct Node* create(char ch, int f) {
+    struct Node* n = malloc(sizeof(struct Node));
+    n->ch = ch;
+    n->freq = f;
+    n->left = n->right = NULL;
+    return n;
+}
+
+void printCodes(struct Node* root, char code[], int top) {
+    if (!root) return;
+
+    if (!root->left && !root->right) {
+        code[top] = '\0';
+        printf("%c : %s\n", root->ch, code);
+        return;
+    }
+
+    code[top] = '0';
+    printCodes(root->left, code, top + 1);
+    code[top] = '1';
+    printCodes(root->right, code, top + 1);
+}
+
+int main() {
+    char ch[] = {'a','c','d','e','o','m','s','t','u'};
+    int f[] = {20,11,2,10,15,8,10,22,2};
+    int n = 9, i, j;
+    struct Node *a[20], *temp, *p;
+
+    for (i = 0; i < n; i++)
+        a[i] = create(ch[i], f[i]);
+
+    while (n > 1) {
+        for (i = 0; i < n-1; i++)
+            for (j = i+1; j < n; j++)
+                if (a[i]->freq > a[j]->freq) {
+                    temp = a[i];
+                    a[i] = a[j];
+                    a[j] = temp;
+                }
+
+        p = create('$', a[0]->freq + a[1]->freq);
+        p->left = a[0];
+        p->right = a[1];
+
+        a[0] = p;
+        for (i = 1; i < n-1; i++)
+            a[i] = a[i+1];
+        n--;
+    }
+
+    char code[100];
+    printf("Huffman Codes:\n");
+    printCodes(a[0], code, 0);
+
+    return 0;
+}
