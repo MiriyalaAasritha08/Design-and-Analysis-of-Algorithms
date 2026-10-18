@@ -1,0 +1,74 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    char ch;
+    int freq;
+    struct Node *left, *right;
+};
+
+struct Node* create(char ch, int freq) {
+    struct Node* n = malloc(sizeof(struct Node));
+    n->ch = ch;
+    n->freq = freq;
+    n->left = n->right = NULL;
+    return n;
+}
+
+void codes(struct Node* root, char code[], int top) {
+    if (!root) return;
+
+    if (!root->left && !root->right) {
+        code[top] = '\0';
+        printf("%c : %s\n", root->ch, code);
+        return;
+    }
+
+    code[top] = '0';
+    codes(root->left, code, top + 1);
+
+    code[top] = '1';
+    codes(root->right, code, top + 1);
+}
+
+int main() {
+    int n, i, j;
+    char ch;
+    struct Node *a[100], *temp, *parent;
+
+    printf("Enter number of characters: ");
+    scanf("%d", &n);
+
+    for (i = 0; i < n; i++) {
+        int f;
+        printf("Enter character and frequency: ");
+        scanf(" %c %d", &ch, &f);
+        a[i] = create(ch, f);
+    }
+
+    while (n > 1) {
+        for (i = 0; i < n - 1; i++)
+            for (j = i + 1; j < n; j++)
+                if (a[i]->freq > a[j]->freq) {
+                    temp = a[i];
+                    a[i] = a[j];
+                    a[j] = temp;
+                }
+
+        parent = create('$', a[0]->freq + a[1]->freq);
+        parent->left = a[0];
+        parent->right = a[1];
+
+        a[0] = parent;
+        for (i = 1; i < n - 1; i++)
+            a[i] = a[i + 1];
+        n--;
+    }
+
+    char code[100];
+    printf("\nHuffman Codes:\n");
+    codes(a[0], code, 0);
+
+    return 0;
+}
